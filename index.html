@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login do Sistema</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f0f0;
+      text-align: center;
+      padding-top: 80px;
+    }
+    .box {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      display: inline-block;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    input, button {
+      display: block;
+      margin: 10px auto;
+      padding: 10px;
+      width: 80%;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    #cadastroForm {
+      display: none;
+    }
+    .link {
+      color: blue;
+      cursor: pointer;
+      font-size: 0.9em;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h2>Login</h2>
+    <form id="loginForm" onsubmit="fazerLogin(event)">
+      <input type="text" id="loginUsuario" placeholder="Usuário" required />
+      <input type="password" id="loginSenha" placeholder="Senha" required />
+      <button type="submit">Entrar</button>
+      <div class="link" onclick="mostrarCadastro()">Não tem conta? Cadastre-se</div>
+    </form>
+
+    <form id="cadastroForm" onsubmit="fazerCadastro(event)">
+      <input type="text" id="novoUsuario" placeholder="Novo usuário" required />
+      <input type="password" id="novaSenha" placeholder="Nova senha" required />
+      <button type="submit">Cadastrar</button>
+      <div class="link" onclick="mostrarLogin()">Já tem conta? Fazer login</div>
+    </form>
+  </div>
+
+  <script>
+    function mostrarCadastro() {
+      document.getElementById('loginForm').style.display = 'none';
+      document.getElementById('cadastroForm').style.display = 'block';
+    }
+
+    function mostrarLogin() {
+      document.getElementById('cadastroForm').style.display = 'none';
+      document.getElementById('loginForm').style.display = 'block';
+    }
+
+    function fazerCadastro(event) {
+      event.preventDefault();
+      const usuario = document.getElementById('novoUsuario').value.trim();
+      const senha = document.getElementById('novaSenha').value;
+
+      if (!usuario || !senha) return alert("Preencha todos os campos!");
+
+      const usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
+
+      if (usuarios.some(u => u.usuario === usuario)) {
+        return alert("Usuário já existe!");
+      }
+
+      usuarios.push({ usuario, senha });
+      localStorage.setItem('usuarios', JSON.stringify(usuarios));
+      alert("Usuário cadastrado com sucesso!");
+      mostrarLogin();
+    }
+
+    function fazerLogin(event) {
+      event.preventDefault();
+      const usuario = document.getElementById('loginUsuario').value.trim();
+      const senha = document.getElementById('loginSenha').value;
+
+      const usuarios = JSON.parse(localStorage.getItem('usuarios')) || [];
+
+      const existe = usuarios.find(u => u.usuario === usuario && u.senha === senha);
+
+      if (existe) {
+        alert("Login bem-sucedido!");
+        // Redirecionar para sistema real
+        window.location.href = "home.html"; // depois você pode trocar por slide ou outra seção
+      } else {
+        alert("Usuário ou senha inválidos.");
+      }
+    }
+  </script>
+</body>
+</html>
